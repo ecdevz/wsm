@@ -51,14 +51,22 @@
     "docs": "typedoc",
     "docs:serve": "typedoc --watch",
     "release": "release-it",
-    "validate": "npm run lint:check && npm run format:check && npm run build && npm run test"
+    "release:local": "node -e \"process.platform === 'win32' ? require('child_process').spawn('cmd', ['/c', 'scripts\\\\release.bat'], {stdio: 'inherit'}) : require('child_process').spawn('bash', ['scripts/release.sh'], {stdio: 'inherit'})\"",
+    "validate": "npm run lint:check && npm run format:check && npm run build && npm run test",
+    "prepublishOnly": "npm run validate",
+    "version:patch": "npm version patch",
+    "version:minor": "npm version minor", 
+    "version:major": "npm version major",
+    "publish:latest": "npm publish --tag latest",
+    "publish:beta": "npm publish --tag beta",
+    "publish:dry": "npm publish --dry-run"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yourusername/baileys-session-manager-mongodb.git"
+    "url": "https://github.com/ecdevz/wsm.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/baileys-session-manager-mongodb/issues"
+    "url": "https://github.com/ecdevz/wsm/issues"
   },
   "dependencies": {
     "libsignal": "^2.0.1",

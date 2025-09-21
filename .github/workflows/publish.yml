@@ -1,0 +1,216 @@
+name: 📦 Publish to NPM
+
+on:
+  # Trigger on new releases
+  release:
+    types: [published]
+  
+  # Allow manual triggering
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version type (patch, minor, major, prerelease)'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+          - prerelease
+      tag:
+        description: 'NPM tag (latest, beta, alpha)'
+        required: true
+        default: 'latest'
+        type: choice
+        options:
+          - latest
+          - beta
+          - alpha
+      dry_run:
+        description: 'Dry run (do not actually publish)'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  test:
+    name: 🧪 Test & Validate
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 20.x]
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 📦 Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: 🔧 Install dependencies
+        run: npm ci
+
+      - name: 🧹 Lint code
+        run: npm run lint:check
+
+      - name: 💅 Check formatting
+        run: npm run format:check
+
+      - name: 🏗️ Build project
+        run: npm run build
+
+      - name: 🧪 Run tests
+        run: npm test --if-present
+
+      - name: 📊 Upload coverage
+        if: matrix.node-version == '20.x'
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage/lcov.info
+          fail_ci_if_error: false
+
+  publish:
+    name: 🚀 Publish to NPM
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: 🔧 Install dependencies
+        run: npm ci
+
+      - name: 🏗️ Build project
+        run: npm run build
+
+      - name: 🔍 Package integrity check
+        run: npm pack --dry-run
+
+      - name: 📋 Get package info
+        id: package
+        run: |
+          echo "name=$(node -p "require('./package.json').name")" >> $GITHUB_OUTPUT
+          echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - name: 🏷️ Determine version and tag
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            # Extract version from release tag (remove 'v' prefix)
+            VERSION="${{ github.event.release.tag_name }}"
+            VERSION="${VERSION#v}"
+            TAG="latest"
+            if [[ "$VERSION" == *"beta"* ]]; then
+              TAG="beta"
+            elif [[ "$VERSION" == *"alpha"* ]]; then
+              TAG="alpha"
+            elif [[ "$VERSION" == *"-"* ]]; then
+              TAG="prerelease"
+            fi
+          else
+            # Manual trigger
+            VERSION_TYPE="${{ github.event.inputs.version }}"
+            TAG="${{ github.event.inputs.tag }}"
+            
+            # Update version in package.json
+            npm version $VERSION_TYPE --no-git-tag-version
+            VERSION=$(node -p "require('./package.json').version")
+            
+            # Commit version change
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git add package.json
+            git commit -m "chore: bump version to $VERSION" || exit 0
+            
+            # Create and push tag
+            git tag "v$VERSION"
+            git push origin "v$VERSION"
+          fi
+          
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "dry_run=${{ github.event.inputs.dry_run }}" >> $GITHUB_OUTPUT
+
+      - name: 🔍 Dry run publish
+        if: steps.version.outputs.dry_run == 'true'
+        run: |
+          echo "🔍 This is a dry run - package would be published with:"
+          echo "📦 Package: ${{ steps.package.outputs.name }}"
+          echo "🏷️ Version: ${{ steps.version.outputs.version }}"
+          echo "🏷️ Tag: ${{ steps.version.outputs.tag }}"
+          npm publish --dry-run --tag ${{ steps.version.outputs.tag }}
+
+      - name: 🚀 Publish to NPM
+        if: steps.version.outputs.dry_run != 'true'
+        run: npm publish --tag ${{ steps.version.outputs.tag }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: 📢 Create GitHub release (manual trigger)
+        if: github.event_name == 'workflow_dispatch' && steps.version.outputs.dry_run != 'true'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          release_name: Release v${{ steps.version.outputs.version }}
+          body: |
+            ## 🚀 Release v${{ steps.version.outputs.version }}
+            
+            **Package:** `${{ steps.package.outputs.name }}`
+            **Version:** `${{ steps.version.outputs.version }}`
+            **NPM Tag:** `${{ steps.version.outputs.tag }}`
+            
+            ### 📦 Installation
+            ```bash
+            npm install ${{ steps.package.outputs.name }}@${{ steps.version.outputs.tag }}
+            ```
+            
+            ### 🔗 Links
+            - [NPM Package](https://www.npmjs.com/package/${{ steps.package.outputs.name }})
+            - [Documentation](https://github.com/${{ github.repository }}#readme)
+            - [Changelog](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md)
+          draft: false
+          prerelease: ${{ steps.version.outputs.tag != 'latest' }}
+
+      - name: ✅ Success notification
+        if: steps.version.outputs.dry_run != 'true'
+        run: |
+          echo "🎉 Successfully published ${{ steps.package.outputs.name }}@${{ steps.version.outputs.version }}"
+          echo "🔗 View on NPM: https://www.npmjs.com/package/${{ steps.package.outputs.name }}"
+          echo "📊 Bundle size: https://bundlephobia.com/package/${{ steps.package.outputs.name }}@${{ steps.version.outputs.version }}"
+
+  notify:
+    name: 📢 Notify
+    needs: [test, publish]
+    runs-on: ubuntu-latest
+    if: always() && (github.event_name == 'release' || github.event_name == 'workflow_dispatch')
+    
+    steps:
+      - name: 📢 Deployment status
+        run: |
+          if [ "${{ needs.publish.result }}" = "success" ]; then
+            echo "✅ Deployment successful!"
+          else
+            echo "❌ Deployment failed!"
+            exit 1
+          fi
