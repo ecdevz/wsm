@@ -209,7 +209,7 @@ This bot is powered by:
 • MongoDB Session Manager
 • Node.js & TypeScript
 
-Repository: https://github.com/yourusername/baileys-session-manager-mongodb
+Repository: https://github.com/ecdevz/wsm
                 `.trim();
 
                 await sock.sendMessage(senderJid, { 

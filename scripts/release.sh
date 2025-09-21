@@ -141,7 +141,7 @@ echo "   - Build the project"
 echo "   - Publish to NPM when you create a GitHub release"
 echo
 echo "2. 🏷️ Create a GitHub release:"
-echo "   - Go to: https://github.com/yourusername/baileys-session-manager-mongodb/releases/new"
+echo "   - Go to: https://github.com/ecdevz/wsm/releases/new"
 echo "   - Choose tag: $TAG"
 echo "   - Fill in release notes"
 echo "   - Click 'Publish release'"
@@ -154,4 +154,4 @@ echo
 
 success "Release preparation complete!"
 log "Tag created: $TAG"
-log "Monitor deployment: https://github.com/yourusername/baileys-session-manager-mongodb/actions"
+log "Monitor deployment: https://github.com/ecdevz/wsm/actions"

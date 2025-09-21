@@ -16,7 +16,7 @@
     "typescript",
     "whatsapp-web"
   ],
-  "homepage": "https://github.com/yourusername/baileys-session-manager-mongodb#readme",
+  "homepage": "https://github.com/ecdevz/wsm.git#readme",
   "types": "lib/index.d.ts",
   "main": "lib/index.js",
   "module": "lib/index.js",
@@ -33,7 +33,7 @@
     "LICENSE"
   ],
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=20.0.0"
   },
   "scripts": {
     "build": "npm run clean && tsc",

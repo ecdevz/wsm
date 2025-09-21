@@ -62,7 +62,7 @@ If you want to contribute or modify this package:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/baileys-session-manager-mongodb.git
+git clone https://github.com/ecdevz/wsm.git
 cd baileys-session-manager-mongodb
 ```
 
@@ -192,8 +192,8 @@ Check the `examples/` directory for complete usage examples:
 ### Getting Help
 
 - 📖 **Documentation:** Check the `docs/` folder
-- 🐛 **Issues:** [GitHub Issues](https://github.com/yourusername/baileys-session-manager-mongodb/issues)
-- 💬 **Discussions:** [GitHub Discussions](https://github.com/yourusername/baileys-session-manager-mongodb/discussions)
+- 🐛 **Issues:** [GitHub Issues](https://github.com/ecdevz/wsm/issues)
+- 💬 **Discussions:** [GitHub Discussions](https://github.com/ecdevz/wsm/discussions)
 
 ## Next Steps
 

@@ -309,8 +309,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 If you encounter any issues or have questions:
 
 1. Check the [documentation](#-api-reference)
-2. Search [existing issues](https://github.com/yourusername/baileys-session-manager-mongodb/issues)
-3. Create a [new issue](https://github.com/yourusername/baileys-session-manager-mongodb/issues/new) with detailed information
+2. Search [existing issues](https://github.com/ecdevz/wsm/issues)
+3. Create a [new issue](https://github.com/ecdevz/wsm/issues/new) with detailed information
 
 ## 🔮 Roadmap
 
@@ -323,4 +323,4 @@ If you encounter any issues or have questions:
 
 ---
 
-Made with ❤️ by [Eshan Chathuranga](https://github.com/yourusername)
+Made with ❤️ by [Eshan Chathuranga](https://github.com/ecdevz)

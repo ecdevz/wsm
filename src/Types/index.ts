@@ -84,7 +84,7 @@ export interface LTHashState {
   hash: Buffer;
   /** Index to value mapping with MAC verification */
   indexValueMap: {
-    [indexMacBase64: string]: { 
+    [indexMacBase64: string]: {
       /** MAC value for verification */
       valueMac: Uint8Array | Buffer;
     };
@@ -125,17 +125,17 @@ export interface SignalKeyStore {
    * @returns Promise resolving to mapping of ID to key data
    */
   get<T extends keyof SignalDataTypeMap>(
-    type: T, 
+    type: T,
     ids: string[]
   ): Awaitable<{ [id: string]: SignalDataTypeMap[T] }>;
-  
+
   /**
    * Store multiple keys of different types
    * @param data - Object containing keys organized by type and ID
    * @returns Promise that resolves when storage is complete
    */
   set(data: SignalDataSet): Awaitable<void>;
-  
+
   /**
    * Clear all stored keys (optional method)
    * @returns Promise that resolves when clearing is complete
