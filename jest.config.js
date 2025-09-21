@@ -21,7 +21,9 @@ module.exports = {
   
   // Transform configuration
   transform: {
-    '^.+\\.ts$': 'ts-jest'
+    '^.+\\.ts$': ['ts-jest', {
+      tsconfig: './tsconfig.test.json'
+    }]
   },
   
   // Module name mapping for absolute imports
@@ -51,40 +53,23 @@ module.exports = {
       statements: 50
     }
   },
-  
-  // TypeScript configuration
-  globals: {
-    'ts-jest': {
-      tsconfig: {
-        compilerOptions: {
-          // Allow importing modules without explicit types
-          esModuleInterop: true,
-          allowSyntheticDefaultImports: true,
-          // Skip type checking for faster tests
-          skipLibCheck: true,
-          // Use CommonJS for compatibility
-          module: 'commonjs'
-        }
-      }
-    }
-  },
-  
+
   // Clear mocks between tests
   clearMocks: true,
-  
+
   // Verbose output
   verbose: false,
-  
+
   // Test timeout (in milliseconds)
   testTimeout: 30000,
-  
+
   // Ignore patterns
   testPathIgnorePatterns: [
     '<rootDir>/node_modules/',
     '<rootDir>/lib/',
     '<rootDir>/dist/'
   ],
-  
+
   // Module paths to ignore
   modulePathIgnorePatterns: [
     '<rootDir>/lib/',
