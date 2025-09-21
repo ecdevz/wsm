@@ -1,6 +1,6 @@
 {
   "name": "@sky7/wsm",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Professional MongoDB session manager for Baileys WhatsApp Web API with full TypeScript support",
   "license": "MIT",
   "author": {
