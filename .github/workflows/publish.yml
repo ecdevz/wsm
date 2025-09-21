@@ -82,6 +82,11 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
     
+    permissions:
+      contents: write
+      packages: write
+      id-token: write
+    
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -135,14 +140,17 @@ jobs:
             npm version $VERSION_TYPE --no-git-tag-version
             VERSION=$(node -p "require('./package.json').version")
             
+            # Configure git with proper user
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            
             # Commit version change
-            git config --local user.email "action@github.com"
-            git config --local user.name "GitHub Action"
-            git add package.json
+            git add package.json package-lock.json
             git commit -m "chore: bump version to $VERSION" || exit 0
             
             # Create and push tag
             git tag "v$VERSION"
+            git push origin HEAD:main
             git push origin "v$VERSION"
           fi
           

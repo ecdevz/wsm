@@ -59,7 +59,11 @@
     "version:major": "npm version major",
     "publish:latest": "npm publish --tag latest",
     "publish:beta": "npm publish --tag beta",
-    "publish:dry": "npm publish --dry-run"
+    "publish:dry": "npm publish --dry-run",
+    "release:patch": "npm run validate && npm version patch && git push origin main && git push origin --tags && npm publish",
+    "release:minor": "npm run validate && npm version minor && git push origin main && git push origin --tags && npm publish",
+    "release:major": "npm run validate && npm version major && git push origin main && git push origin --tags && npm publish",
+    "release:beta": "npm run validate && npm version prerelease --preid=beta && git push origin main && git push origin --tags && npm publish --tag beta"
   },
   "repository": {
     "type": "git",
