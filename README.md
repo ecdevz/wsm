@@ -1,4 +1,4 @@
-# Baileys Session Manager for MongoDB
+# Baileys Session Manager for Whatsapp API
 
 A professional, production-ready MongoDB session manager for the [Baileys WhatsApp Web API](https://github.com/WhiskeySockets/Baileys) library. This package provides secure, efficient, and reliable session storage with comprehensive error handling, retry logic, and full TypeScript support.
 
@@ -20,11 +20,11 @@ A professional, production-ready MongoDB session manager for the [Baileys WhatsA
 ## 📦 Installation
 
 ```bash
-npm install baileys-session-manager-mongodb
+npm install @ecync/wsm
 # or
-yarn add baileys-session-manager-mongodb
+yarn add @ecync/wsm
 # or
-pnpm add baileys-session-manager-mongodb
+pnpm add @ecync/wsm
 ```
 
 ### Peer Dependencies
@@ -41,7 +41,7 @@ npm install @whiskeysockets/baileys
 
 ```typescript
 import makeWASocket, { DisconnectReason, useMultiFileAuthState } from '@whiskeysockets/baileys';
-import { useMongoAuthState } from 'baileys-session-manager-mongodb';
+import { useMongoAuthState } from '@ecync/wsm';
 
 async function connectToWhatsApp() {
   // Initialize MongoDB session manager
@@ -85,7 +85,7 @@ connectToWhatsApp();
 ### Advanced Configuration
 
 ```typescript
-import { useMongoAuthState, MongoConfig } from 'baileys-session-manager-mongodb';
+import { useMongoAuthState, MongoConfig } from '@ecync/wsm';
 
 const config: MongoConfig = {
   session: 'advanced-session',
@@ -309,8 +309,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 If you encounter any issues or have questions:
 
 1. Check the [documentation](#-api-reference)
-2. Search [existing issues](https://github.com/ecdevz/wsm/issues)
-3. Create a [new issue](https://github.com/ecdevz/wsm/issues/new) with detailed information
+2. Search [existing issues](https://github.com/ecync/wsm/issues)
+3. Create a [new issue](https://github.com/ecync/wsm/issues/new) with detailed information
 
 ## 🔮 Roadmap
 
@@ -323,4 +323,4 @@ If you encounter any issues or have questions:
 
 ---
 
-Made with ❤️ by [Eshan Chathuranga](https://github.com/ecdevz)
+Made with ❤️ by [Eshan Chathuranga](https://github.com/ecync)
